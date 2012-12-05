@@ -4,6 +4,10 @@
 - Put legend explaining encodings [bottom]
 - Put instructions in space next to legend [bottom]
   - The last 3 can be placed in a collapsable semi-transparent window, in order to save space. The "sorted by: _____" should be always visible and the legend and info could be hidden/revealed. (just an idea)
+- Include style name in restaurant tooltip
+- Align tooltip text left
+- Scales
+- Draggable regions
 - Check review count tabulation **(COMPLETE)**
 - Transitions **(COMPLETE)**
 - Fix tooltips **(COMPLETE)**
@@ -19,7 +23,6 @@
 - Add grid in bubble area **(COMPLETE)**
 - Set 2px margins between universities **(COMPLETE)**
 - Set logos equal size to graph width **(COMPLETE)**
-
 - Desaturate all other attributes on rollover of attribute **(COMPLETE)**
 - Leave border around graph and space below for the following **(COMPLETE)**
 - Put project name... URIF! [top] **(COMPLETE)**

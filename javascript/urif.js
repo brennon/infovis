@@ -766,6 +766,10 @@ var updateStyleOrder = function(d, key) {
 	draw(false);
 }
 
+function playSound() {
+	document.getElementById("soundfile").innerHTML="<embed src=\"./media/whoosh.wav\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
+}
+
 
 /************************************************************
  * Setup routines
@@ -792,6 +796,7 @@ var draw = function(isResizing) {
 
 window.onresize = function() {
 	draw(true);
+	// playSound();
 }
 
 start();
