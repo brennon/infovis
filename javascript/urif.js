@@ -78,8 +78,8 @@ var descriptions = {
 	female: "Females",
 	full_time: "Full-Time Students",
 	part_time: "Part-Time Students",
-	in_state: "In State Students",
-	out_of_state: "Out of State Students",
+	in_state: "In-State Students",
+	out_of_state: "Out-of-State Students",
 	international: "International Students",
 	unknown_residence: "Unknown Residence",
 	nonresident_alien: "Non-Resident Alien",
@@ -305,7 +305,7 @@ var buildEntireChart = function(div, isResizing) {
 			}
 		},
 		restaurantLabels: {
-			width: function() { return dimensions.svg.width() * 0.15; },
+			width: function() { return dimensions.svg.width() * 0.05; },
 		},
 		columns: {
 			width: function() { return (dimensions.svg.width() - dimensions.restaurantLabels.width()) / universities.length; },
@@ -366,7 +366,7 @@ var buildEntireChart = function(div, isResizing) {
 			return styleOrder.map(function(d) {
 				return {name: d, description: descriptions[d]};
 			})
-		});
+		}, function(d) { return d.name; });
 	
 	restaurantLabels.enter()
 		.append("text")
@@ -374,7 +374,20 @@ var buildEntireChart = function(div, isResizing) {
 		.text(function(d) { return d.description; })
 		.attr("x", 0)
 		.attr("y", function(d, i) {
-			return dimensions.rows.bubbles.height() * i + 10;
+			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);
+		})
+		.attr("dy", function(d) {
+			return this.getBBox().height / 4;
+		});
+	
+	restaurantLabels.transition()
+		.duration(2000)
+		.attr("x", 0)
+		.attr("y", function(d, i) {
+			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);
+		})
+		.attr("dy", function(d) {
+			return this.getBBox().height / 4;
 		});
 	
 	var currentColumnOrder = universities.map(function(d) { return d.name; });
@@ -512,7 +525,8 @@ var buildEntireChart = function(div, isResizing) {
 				.attr("x", function(d) {
 					var index = currentColumnOrder.indexOf(d.university);
 					var subindex = stackedCategoryOrder.indexOf(d.category);
-					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth);
+					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth) +
+						((dimensions.columns.width() - (numberOfStackedBars * stackedBarWidth)) / numberOfStackedBars) * subindex;
 				})
 				.attr("y", function(d) {
 					var index = stackedSubcategoryOrders[d.category].indexOf(d.subcategory);
@@ -534,7 +548,8 @@ var buildEntireChart = function(div, isResizing) {
 				.attr("x", function(d) {
 					var index = currentColumnOrder.indexOf(d.university);
 					var subindex = stackedCategoryOrder.indexOf(d.category);
-					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth);
+					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth) +
+						((dimensions.columns.width() - (numberOfStackedBars * stackedBarWidth)) / numberOfStackedBars) * subindex;
 				})
 				.attr("y", dimensions.svg.height())
 				.attr("title", function(d) { 
