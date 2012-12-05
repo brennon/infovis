@@ -493,11 +493,10 @@ var buildEntireChart = function(div, isResizing) {
 	logos.enter()
 		.append("image")
 		.classed("universityLogo", true)
-		.attr("ry", 0)
 		.attr("x", function(d, i) {
 			return dimensions.restaurantLabels.width() + dimensions.columns.width() * i;
 		})
-		.attr("y", function(d) { return dimensions.bubbles.height(); })
+		.attr("y", function(d) { return dimensions.bubbles.height() + 2.5; })
 		.attr("height", function(d) { return dimensions.columns.width(); })
 		.attr("width", function(d) { return dimensions.columns.width(); })
 		.attr("xlink:href", function(d) { return d.logo; })
@@ -547,7 +546,10 @@ var buildEntireChart = function(div, isResizing) {
 			.classed("highlighted", true)
 			.attr("class", category)
 			.attr("width", alignedBarWidth)
-			.attr("height", function(d) { return alignedBarHeight * (d.value / universityInfo[d.category].max); })
+			.attr("height", function(d) {
+				var maxDollars = d3.max([universityInfo.fees.max, universityInfo.salary.max]);
+				return alignedBarHeight * (d.value / maxDollars);
+			})
 			.attr("x", function(d) {
 				var index = currentColumnOrder.indexOf(d.university);
 				var subindex = alignedCategoryOrder.indexOf(d.category);
@@ -690,7 +692,47 @@ var buildEntireChart = function(div, isResizing) {
 		}
 	}
 	
-	if (isResizing) addTooltips();
+	if (isResizing) {
+		var grid = svg.append("g");
+	
+		grid.classed("grid", true);
+	
+		for (var i = 0; i < styleOrder.length + 1; i++) {
+			grid.append("line")
+				.attr("x1", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
+				.attr("y1", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.attr("x2", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
+				.attr("y2", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.transition()
+				.duration(2000)
+				.attr("x1", dimensions.bubbles.x())
+				.attr("y1", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
+				.attr("x2", dimensions.bubbles.x() + dimensions.bubbles.width())
+				.attr("y2", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
+				.attr("stroke", "rgb(150,150,150)")
+				.attr("stroke-width", 2)
+				.attr("stroke-dasharray", "5, 5");
+		}
+	
+		for (var i = 0; i < universities.length + 1; i++) {
+			grid.append("line")
+				.attr("x1", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
+				.attr("y1", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.attr("x2", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
+				.attr("y2", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.transition()
+				.duration(2000)
+				.attr("x1", dimensions.bubbles.x() + (i * dimensions.columns.width()))
+				.attr("y1", dimensions.bubbles.y())
+				.attr("x2", dimensions.bubbles.x() + (i * dimensions.columns.width()))
+				.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height())
+				.attr("stroke", "rgb(150,150,150)")
+				.attr("stroke-width", 2)
+				.attr("stroke-dasharray", "5, 5");
+		}
+	
+		addTooltips();
+	}
 };
 
 
