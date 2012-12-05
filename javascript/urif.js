@@ -41,8 +41,8 @@
 
 // Global university data
 var universityInfo = {
-	costs: { min: 0, max: 0 },
-	salaries: { min: 0, max: 0 }
+	fees: { min: 0, max: 0 },
+	salary: { min: 0, max: 0 }
 };
 
 // Global restaurant data
@@ -58,8 +58,9 @@ var dataFilesLoaded = 0;
 
 // Sort orders
 // Initial sort by either "stats" or "restaurants"
-var mainSortKey = "stats";
+var mainSortKey = "restaurants";
 var styleOrder = ["american", "african", "asian", "european", "latin_american", "middle_eastern", "mediterranean", "mexican", "uncategorized"];
+var alignedCategoryOrder = ["salary", "fees"];
 var stackedCategoryOrder = ["people", "genders", "residencies","ethnicities"];
 var stackedSubcategoryOrders = {
 	people: ["undergrads", "grads", "faculty"],
@@ -100,7 +101,9 @@ var descriptions = {
 	middle_eastern: "Middle Eastern",
 	mediterranean: "Mediterranean",
 	mexican: "Mexican",
-	uncategorized: "Uncategorized"
+	uncategorized: "Uncategorized",
+	salary: "Average Faculty Salary",
+	fees: "Annual Cost of Attendance"
 };
 
 
@@ -176,10 +179,10 @@ var parseUniversitySummaryData = function() {
 	});
 	
 	// Calculate maximum and minimum costs and salaries across universities
-	universityInfo.costs.max = d3.max(costs);
-	universityInfo.costs.min = d3.min(costs);
-	universityInfo.salaries.max = d3.max(salaries);
-	universityInfo.salaries.min = d3.min(salaries);
+	universityInfo.fees.max = d3.max(costs);
+	universityInfo.fees.min = d3.min(costs);
+	universityInfo.salary.max = d3.max(salaries);
+	universityInfo.salary.min = d3.min(salaries);
 };
 
 // Parsing and formatting of raw data from CSV file
@@ -280,6 +283,14 @@ var importCSVData = function(callback) {
 	});
 };
 
+var addTooltips = function() {
+	$('svg rect').tipsy({
+		fade: true,
+		gravity: $.fn.tipsy.autoWE,
+		html: true
+	});
+}
+
 
 /************************************************************
  * Drawing functions
@@ -354,9 +365,12 @@ var buildEntireChart = function(div, isResizing) {
 			else compareA = aStats.averageStars();
 			if (bStats === undefined) compareB = 0.0;
 			else compareB = bStats.averageStars();
-		} else {
+		} else if (mainSortKey == "stacked") {
 			compareA = a[stackedCategoryOrder[0]][stackedSubcategoryOrders[stackedCategoryOrder[0]][0]];
 			compareB = b[stackedCategoryOrder[0]][stackedSubcategoryOrders[stackedCategoryOrder[0]][0]];
+		} else if (mainSortKey == "aligned") {
+			compareA = a[alignedCategoryOrder[0]];
+			compareB = b[alignedCategoryOrder[0]];
 		}
 		return compareB - compareA;
 	});
@@ -452,7 +466,7 @@ var buildEntireChart = function(div, isResizing) {
 		})
 		.on("click", function() { 
 			var style = d3.select(this)[0][0].__data__.category;
-			updateStyleOrder(style, "restaurant");
+			updateStyleOrder(style, "restaurants");
 		})
 		.transition()
 		.duration(1000)
@@ -494,7 +508,91 @@ var buildEntireChart = function(div, isResizing) {
 	
 	var numberOfStackedBars = stackedCategoryOrder.length;
 	var stackedBarWidth = (dimensions.columns.width() / numberOfStackedBars) - 2;
-	var stackedBarHeight = dimensions.bars.height();
+	var stackedBarHeight = (dimensions.bars.height() / 2) - 2;
+	
+	var numberOfAlignedBars = alignedCategoryOrder.length;
+	var alignedBarWidth = (dimensions.columns.width() / numberOfAlignedBars) - 2;
+	var alignedBarHeight = (dimensions.bars.height() / 2) - 2;
+	
+	var alignedCharts = svg.selectAll("g.alignedChart")
+		.data(universities, function(d) { return d.name; });
+	
+	alignedCharts.enter()
+		.append("g")
+		.classed("alignedChart", true);
+	
+	for (var c in alignedCategoryOrder) {
+		var category = alignedCategoryOrder[c];
+		var rects = alignedCharts.selectAll("rect." + category)
+			.data(function(d) {
+				var data = {
+					category: category,
+					value: d[category],
+					university: d.name
+				}
+				return ([data]);
+			});
+		
+		rects.transition()
+			.duration(2000)
+			.attr("x", function(d) {
+				var index = currentColumnOrder.indexOf(d.university);
+				var subindex = alignedCategoryOrder.indexOf(d.category);
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
+					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+			});
+		
+		rects.enter()
+			.append("rect")
+			.classed("highlighted", true)
+			.attr("class", category)
+			.attr("width", alignedBarWidth)
+			.attr("height", function(d) { return alignedBarHeight * (d.value / universityInfo[d.category].max); })
+			.attr("x", function(d) {
+				var index = currentColumnOrder.indexOf(d.university);
+				var subindex = alignedCategoryOrder.indexOf(d.category);
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
+					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+			})
+			.attr("y", function(d) {
+				return dimensions.svg.height();
+			})
+			.attr("title", function(d) { 
+				return descriptions[d.category] + ": $" + d.value; 
+			})
+			.on("mouseover", function() {
+				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
+				$("rect").each(function() {
+					var thisClassName = d3.select(this).attr("class").split(" ")[0];
+					if (thisClassName != highlightedClassName) {
+						d3.select(this).classed("highlighted", false);
+						d3.select(this).classed("muted", true);
+					}
+				});
+			})
+			.on("mouseout", function() {
+				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
+				$("rect").each(function() {
+					var thisClassName = d3.select(this).attr("class").split(" ")[0];
+					if (thisClassName != highlightedClassName) {
+						d3.select(this).classed("highlighted", true);
+						d3.select(this).classed("muted", false);
+					}
+				});
+			})
+			.on("click", function(d) { 
+				var className = this.className.baseVal;
+				var thisCat = className.substring(0,className.indexOf(" "));
+				if (thisCat == "")
+					thisCat = className;
+				updateStyleOrder({category: thisCat}, "aligned");
+			})
+			.transition()
+			.duration(1000)
+			.attr("y", function(d) {
+				return dimensions.bars.y() + dimensions.bars.height() / 2;
+			});
+	}
 	
 	var stackedCharts = svg.selectAll("g.stackedChart")
 		.data(universities, function(d) { return d.name; });
@@ -503,9 +601,9 @@ var buildEntireChart = function(div, isResizing) {
 		.append("g")
 		.classed("stackedChart", true)
 	
-	for (c in stackedCategoryOrder) {
+	for (var c in stackedCategoryOrder) {
 		var category = stackedCategoryOrder[c];
-		for (s in stackedSubcategoryOrders[category]) {
+		for (var s in stackedSubcategoryOrders[category]) {
 			var subcategory = stackedSubcategoryOrders[category][s];
 			
 			var rects = stackedCharts.selectAll("rect." + category + "-" + subcategory)
@@ -531,13 +629,11 @@ var buildEntireChart = function(div, isResizing) {
 				.attr("y", function(d) {
 					var index = stackedSubcategoryOrders[d.category].indexOf(d.subcategory);
 					var accumulatedHeight = 0;
-					for (i = 0; i < index; i++) {
+					for (var i = 0; i < index; i++) {
 						accumulatedHeight += this.parentNode.__data__[d.category][stackedSubcategoryOrders[d.category][i]] * stackedBarHeight;
 					}
 					return accumulatedHeight + dimensions.bars.y();
-				})
-				.attr("width", stackedBarWidth)
-				.attr("height", function(d) { return stackedBarHeight * d.value; });
+				});
 			
 			rects.enter()
 				.append("rect")
@@ -559,7 +655,7 @@ var buildEntireChart = function(div, isResizing) {
 				.on("click", function(d) { 
 					var className = this.className.baseVal;
 					var thisCat = className.substring(0,className.indexOf("-"));
-					updateStyleOrder({subcategory: d.subcategory, category: thisCat}, "stat");
+					updateStyleOrder({subcategory: d.subcategory, category: thisCat}, "stacked");
 				})
 				.on("mouseover", function() {
 					var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
@@ -586,19 +682,15 @@ var buildEntireChart = function(div, isResizing) {
 				.attr("y", function(d) {
 					var index = stackedSubcategoryOrders[d.category].indexOf(d.subcategory);
 					var accumulatedHeight = 0;
-					for (i = 0; i < index; i++) {
+					for (var i = 0; i < index; i++) {
 						accumulatedHeight += this.parentNode.__data__[d.category][stackedSubcategoryOrders[d.category][i]] * stackedBarHeight;
 					}
 					return accumulatedHeight + dimensions.bars.y();
 				});
-				
-				$('svg rect').tipsy({
-					fade: true,
-					gravity: $.fn.tipsy.autoWE,
-					html: true
-				});
 		}
 	}
+	
+	if (isResizing) addTooltips();
 };
 
 
@@ -606,9 +698,8 @@ var buildEntireChart = function(div, isResizing) {
  * Event handler helpers
  ************************************************************/
 var updateStyleOrder = function(d, key) {
-	if (key == "stat") {
-		mainSortKey = "stats";
-
+	mainSortKey = key;
+	if (key == "stacked") {
 		var categoryIndex = stackedCategoryOrder.indexOf(d.category);
 		var subcategoryIndex = stackedSubcategoryOrders[d.category].indexOf(d.subcategory);
 
@@ -621,11 +712,14 @@ var updateStyleOrder = function(d, key) {
 			stackedSubcategoryOrders[d.category].splice(subcategoryIndex, 1);
 			stackedSubcategoryOrders[d.category].unshift(d.subcategory);
 		}
-	} else {
-		mainSortKey = "restaurants";
+	} else if (key == "restaurants") {
 		var index = styleOrder.indexOf(d);
 		styleOrder.splice(index, 1);
 		styleOrder.unshift(d);
+	} else if (key == "aligned"){
+		var index = alignedCategoryOrder.indexOf(d.category);
+		alignedCategoryOrder.splice(index, 1);
+		alignedCategoryOrder.unshift(d.category);
 	}
 	draw(false);
 }

@@ -4,9 +4,6 @@
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/tipsy.css" type="text/css">
 		<link href='http://fonts.googleapis.com/css?family=Holtwood+One+SC|Mouse+Memoirs' rel='stylesheet' type='text/css'>
-		<script type= "text/javascript" src="javascript/jquery-1.8.3.min.js"></script>
-		<script type="text/javascript" src="javascript/d3.v2.js"></script>
-		<script type= "text/javascript" src="javascript/jquery.tipsy.js"></script>
 		<style type="text/css">
 			div#visualization {
 				text-align: left;
@@ -20,6 +17,8 @@
 				margin-top: 20px;
 				font-family: 'Holtwood One SC', serif;
 			}
+			rect.fees { fill: lightsalmon; }
+			rect.salary { fill: lightblue; }
 			rect.people-undergrads.highlighted { fill: rgb(150,235,0); }
 			rect.people-grads.highlighted { fill: rgb(222,222,40); }
 			rect.people-faculty.highlighted { fill: rgb(235,160,40); }
@@ -44,6 +43,9 @@
 			rect.muted { fill: grey; }
 			text.restaurantLabel { font-family: 'Mouse Memoirs', sans-serif; }
 		</style>
+		<script type= "text/javascript" src="javascript/jquery-1.8.3.min.js"></script>		
+		<script type= "text/javascript" src="javascript/jquery.tipsy.js"></script>
+		<script type="text/javascript" src="javascript/d3.v2.js"></script>
 	</head>
 	<body>
 		<div id="header">URIF</div>
