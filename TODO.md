@@ -1,13 +1,17 @@
-- Highlight the selected/sorted by restaurant style
-- Put average rating line per category
-- Put "sorted by:" field [bottom]
-- Put legend explaining encodings [bottom]
-- Put instructions in space next to legend [bottom]
-  - The last 3 can be placed in a collapsable semi-transparent window, in order to save space. The "sorted by: _____" should be always visible and the legend and info could be hidden/revealed. (just an idea)
+- Bar margins
+- $-bar colors
 - Include style name in restaurant tooltip
+- Style/university tooltips
+- Put average rating line per category
+- Put sorted by, legend, instructions at top
+- Scales (incl. mini scale)
+- Style images
+- Highlight the selected/sorted by restaurant style
 - Align tooltip text left
-- Scales
+- Circle radius scale
+- Reorder by style label
 - Draggable regions
+- Sort by university
 - Check review count tabulation **(COMPLETE)**
 - Transitions **(COMPLETE)**
 - Fix tooltips **(COMPLETE)**
