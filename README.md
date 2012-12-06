@@ -9,17 +9,18 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - <del>Bar margins</del>
 - $-bar colors
 - Include style name in restaurant tooltip
-- Style/university tooltips
+- Style label/university tooltips
 - Put average rating line per category
 - Put sorted by, legend, instructions at top
 - Scales (incl. mini scale)
 - Style images
 - Highlight the selected/sorted by restaurant style
-- Align tooltip text left
+- <div>Align tooltip text left</div>
 - Circle radius scale
 - Reorder by style label
 - Draggable regions
 - Sort by university
+- Debounce highlighting
 - <del>Check review count tabulation</del>
 - <del>Transitions</del>
 - <del>Fix tooltips</del>
