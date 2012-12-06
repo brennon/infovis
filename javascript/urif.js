@@ -375,7 +375,7 @@ var buildEntireChart = function(div, isResizing) {
 	
 	// Otherwise, draw in the existing SVG element
 	} else {
-		svg = d3.select("svg");
+		svg = d3.select("div#visualization svg");
 	}
 	
 	// Sort universities based on the current sort order
@@ -843,7 +843,7 @@ function playSound() {
  * Setup routines
  ************************************************************/
 // Initial build
-var start = function() {
+var urifStart = function() {
 	importCSVData(csvCallback);
 };
 

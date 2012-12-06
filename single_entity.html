@@ -43,14 +43,30 @@
 			rect.muted { fill: grey; }
 			text.restaurantLabel { font-family: 'Mouse Memoirs', sans-serif; }
 		</style>
-		<script type= "text/javascript" src="javascript/jquery-1.8.3.min.js"></script>
-		<script type= "text/javascript" src="javascript/jquery.tipsy.js"></script>
-		<script type="text/javascript" src="javascript/d3.v2.js"></script>
+		<script src="http://yui.yahooapis.com/3.7.3/build/yui/yui-min.js"></script>
+		<script>
+			YUI().use('get', function (Y) {
+				var jsFiles = [
+					"javascript/jquery-1.8.3.min.js",
+					"javascript/jquery.tipsy.js",
+					"javascript/d3.v2.js",
+					"javascript/urif.js"
+				];
+				Y.Get.js(jsFiles, function (err) {
+				    if (err) {
+				        Y.Array.each(err, function (error) {
+				            Y.log('Error loading JS: ' + error.error, 'error');
+				        });
+				        return;
+				    }
+
+				    urifStart();
+				});
+			});
+		</script>
 	</head>
 	<body>
 		<div id="header">URIF</div>
 		<div id="visualization"></div>
-		<div id="soundfile"></div>
-		<script type="text/javascript" src="javascript/urif.js"></script>
 	</body>
 </html>
