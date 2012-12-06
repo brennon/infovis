@@ -8,7 +8,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - <del>Update university data with corrected 100% values</del>
 - <del>Bar margins</del>
 - $-bar colors
-- Include style name in restaurant tooltip
+- <del>Include style name in restaurant tooltip</del>
 - Style label/university tooltips
 - Put average rating line per category
 - Put sorted by, legend, instructions at top

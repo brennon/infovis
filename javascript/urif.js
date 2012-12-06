@@ -490,7 +490,7 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 			return (index * dimensions.rows.bubbles.height()) + (dimensions.rows.bubbles.height() / 2);
 		})
 		.attr("title", function(d) {
-			return "Restaurants: "+d.totalRestaurants+"<br />Reviews: "+d.totalReviews+"<br />Average stars: "+d.averageStars().toFixed(2);
+			return "Style: "+descriptions[d.category]+"<br />Restaurants: "+d.totalRestaurants+"<br />Reviews: "+d.totalReviews+"<br />Average stars: "+d.averageStars().toFixed(2);
 		})
 		.on("click", function() { 
 			var style = d3.select(this)[0][0].__data__.category;
