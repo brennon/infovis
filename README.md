@@ -4,7 +4,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
-- Bar margins **(COMPLETE)**
+- <del>Bar margins</del>
 - $-bar colors
 - Include style name in restaurant tooltip
 - Style/university tooltips
@@ -18,22 +18,22 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - Reorder by style label
 - Draggable regions
 - Sort by university
-- Check review count tabulation **(COMPLETE)**
-- Transitions **(COMPLETE)**
-- Fix tooltips **(COMPLETE)**
-- Change ethnicities using 'other' column (new .csv file and code below) **(COMPLETE)**
-- Change graph colors (code below) **(COMPLETE)**
-- Fix inter-bar spacing **(COMPLETE)**
-- Add $-bars with tooltips **(COMPLETE)**
-- Make sort by university functionality, clicking on an attribute name and highlight the selected/sorted by attribute **(COMPLETE)**
-- Make sort by style functionality, clicking on a bubble or style name **(COMPLETE)**
-- Make bubble tooltip (includes: business count, review count, rating) **(COMPLETE)**
-- Set restaurant style names on y-axis (or elsewhere) **(COMPLETE)**
-- Cleanup style labels **(COMPLETE)**
-- Add grid in bubble area **(COMPLETE)**
-- Set 2px margins between universities **(COMPLETE)**
-- Set logos equal size to graph width **(COMPLETE)**
-- Desaturate all other attributes on rollover of attribute **(COMPLETE)**
-- Leave border around graph and space below for the following **(COMPLETE)**
-- Put project name... URIF! [top] **(COMPLETE)**
-- Add Other to ethnicities and change order: **(COMPLETE)**
+- <del>Check review count tabulation</del>
+- <del>Transitions</del>
+- <del>Fix tooltips</del>
+- <del>Change ethnicities using 'other' column (new .csv file and code below)</del>
+- <del>Change graph colors (code below)</del>
+- <del>Fix inter-bar spacing</del>
+- <del>Add $-bars with tooltips</del>
+- <del>Make sort by university functionality, clicking on an attribute name and highlight the selected/sorted by attribute</del>
+- <del>Make sort by style functionality, clicking on a bubble or style name</del>
+- <del>Make bubble tooltip (includes: business count, review count, rating)</del>
+- <del>Set restaurant style names on y-axis (or elsewhere)</del>
+- <del>Cleanup style labels</del>
+- <del>Add grid in bubble area</del>
+- <del>Set 2px margins between universities</del>
+- <del>Set logos equal size to graph width</del>
+- <del>Desaturate all other attributes on rollover of attribute</del>
+- <del>Leave border around graph and space below for the following</del>
+- <del>Put project name... URIF! [top]</del>
+- <del>Add Other to ethnicities and change order:</del>
