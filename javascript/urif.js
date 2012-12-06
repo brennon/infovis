@@ -298,6 +298,7 @@ var addTooltips = function() {
 
 var buildEntireChart = function(div, isResizing) {
 	
+	// Visualization-wide dimensions
 	var dimensions = {
 		svg: {
 			width: function() { return $(div).width(); },
@@ -341,9 +342,10 @@ var buildEntireChart = function(div, isResizing) {
 		}
 	}
 	
+	// SVG for drawing
 	var svg;
 	
-	// Clear main div of drawing
+	// If window is resizing, clear and redraw
 	if (isResizing) {
 		$(div).empty();
 	
@@ -352,10 +354,13 @@ var buildEntireChart = function(div, isResizing) {
 			.append("svg")
 			.attr("width", dimensions.svg.width())
 			.attr("height", dimensions.svg.height());
+			
+	// Otherwise, draw in the existing SVG element
 	} else {
 		svg = d3.select("svg");
 	}
 	
+	// Sort universities based on the current sort order
 	universities = universities.sort(function(a, b) {
 		var compareA, compareB;
 		if (mainSortKey == "restaurants") {
@@ -374,6 +379,15 @@ var buildEntireChart = function(div, isResizing) {
 		}
 		return compareB - compareA;
 	});
+	
+	drawLabels(svg, dimensions);
+	drawColumns(svg, dimensions);
+	
+	if (isResizing)
+		drawGrid(svg, dimensions);
+}
+
+var drawLabels = function(svg, dimensions) {
 	
 	var restaurantLabels = svg.selectAll("text.restaurantLabel")
 		.data(function() {
@@ -403,6 +417,9 @@ var buildEntireChart = function(div, isResizing) {
 		.attr("dy", function(d) {
 			return this.getBBox().height / 4;
 		});
+}
+
+var drawColumns = function(svg, dimensions) {
 	
 	var currentColumnOrder = universities.map(function(d) { return d.name; });
 	
@@ -419,10 +436,21 @@ var buildEntireChart = function(div, isResizing) {
 		.attr("height", dimensions.svg.height())
 		.attr("id", function(d) { return d.name; });
 	
+	drawBubbles(svg, dimensions, currentColumnOrder);
+	drawLogos(svg, dimensions, currentColumnOrder);
+	drawBarCharts(svg, dimensions, currentColumnOrder);
+}
+
+var drawBubbles = function(svg, dimensions, currentColumnOrder) {
+	
 	var circleRadiusScale = d3.scale.pow()
-		.domain([0, 5])
+		.domain([2, 5])
 		.range([0, (dimensions.rows.bubbles.height() / 2)])
 		.exponent(1.5);
+	
+	// var circleRadiusScale = d3.scale.linear()
+	// 	.domain([2, 5])
+	// 	.range([0, (dimensions.rows.bubbles.height() / 2)]);
 	
 	var circleColorScale = d3.scale.log()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
@@ -477,6 +505,9 @@ var buildEntireChart = function(div, isResizing) {
 		gravity: $.fn.tipsy.autoWE,
 		html: true
 	});
+}
+
+var drawLogos = function(svg, dimensions, currentColumnOrder) {
 	
 	var logos = svg.selectAll("image.universityLogo")
 		.data(universities, function(d) { return d.name; });
@@ -504,97 +535,17 @@ var buildEntireChart = function(div, isResizing) {
 		.transition()
 		.duration(2000)
 		.attr("opacity", 1.0);
-	
+}
+
+var drawBarCharts = function(svg, dimensions, currentColumnOrder) {
+	drawStackedBarCharts(svg, dimensions, currentColumnOrder);
+	drawAlignedBarCharts(svg, dimensions, currentColumnOrder);
+}
+
+var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 	var numberOfStackedBars = stackedCategoryOrder.length;
-	var stackedBarWidth = (dimensions.columns.width() / numberOfStackedBars) - 2;
+	var stackedBarWidth = (dimensions.columns.width() / numberOfStackedBars) - 1;
 	var stackedBarHeight = (dimensions.bars.height() / 2) - 2;
-	
-	var numberOfAlignedBars = alignedCategoryOrder.length;
-	var alignedBarWidth = (dimensions.columns.width() / numberOfAlignedBars) - 2;
-	var alignedBarHeight = (dimensions.bars.height() / 2) - 2;
-	
-	var alignedCharts = svg.selectAll("g.alignedChart")
-		.data(universities, function(d) { return d.name; });
-	
-	alignedCharts.enter()
-		.append("g")
-		.classed("alignedChart", true);
-	
-	for (var c in alignedCategoryOrder) {
-		var category = alignedCategoryOrder[c];
-		var rects = alignedCharts.selectAll("rect." + category)
-			.data(function(d) {
-				var data = {
-					category: category,
-					value: d[category],
-					university: d.name
-				}
-				return ([data]);
-			});
-		
-		rects.transition()
-			.duration(2000)
-			.attr("x", function(d) {
-				var index = currentColumnOrder.indexOf(d.university);
-				var subindex = alignedCategoryOrder.indexOf(d.category);
-				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
-					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
-			});
-		
-		rects.enter()
-			.append("rect")
-			.classed("highlighted", true)
-			.attr("class", category)
-			.attr("width", alignedBarWidth)
-			.attr("height", function(d) {
-				var maxDollars = d3.max([universityInfo.fees.max, universityInfo.salary.max]);
-				return alignedBarHeight * (d.value / maxDollars);
-			})
-			.attr("x", function(d) {
-				var index = currentColumnOrder.indexOf(d.university);
-				var subindex = alignedCategoryOrder.indexOf(d.category);
-				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
-					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
-			})
-			.attr("y", function(d) {
-				return dimensions.svg.height();
-			})
-			.attr("title", function(d) { 
-				return descriptions[d.category] + ": $" + d.value; 
-			})
-			.on("mouseover", function() {
-				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-				$("rect").each(function() {
-					var thisClassName = d3.select(this).attr("class").split(" ")[0];
-					if (thisClassName != highlightedClassName) {
-						d3.select(this).classed("highlighted", false);
-						d3.select(this).classed("muted", true);
-					}
-				});
-			})
-			.on("mouseout", function() {
-				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-				$("rect").each(function() {
-					var thisClassName = d3.select(this).attr("class").split(" ")[0];
-					if (thisClassName != highlightedClassName) {
-						d3.select(this).classed("highlighted", true);
-						d3.select(this).classed("muted", false);
-					}
-				});
-			})
-			.on("click", function(d) { 
-				var className = this.className.baseVal;
-				var thisCat = className.substring(0,className.indexOf(" "));
-				if (thisCat == "")
-					thisCat = className;
-				updateStyleOrder({category: thisCat}, "aligned");
-			})
-			.transition()
-			.duration(1000)
-			.attr("y", function(d) {
-				return dimensions.bars.y() + dimensions.bars.height() / 2;
-			});
-	}
 	
 	var stackedCharts = svg.selectAll("g.stackedChart")
 		.data(universities, function(d) { return d.name; });
@@ -691,8 +642,98 @@ var buildEntireChart = function(div, isResizing) {
 				});
 		}
 	}
+}
+
+var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
+	var numberOfAlignedBars = alignedCategoryOrder.length;
+	var alignedBarWidth = (dimensions.columns.width() / numberOfAlignedBars) - 1;
+	var alignedBarHeight = (dimensions.bars.height() / 2) - 2;
 	
-	if (isResizing) {
+	var alignedCharts = svg.selectAll("g.alignedChart")
+		.data(universities, function(d) { return d.name; });
+	
+	alignedCharts.enter()
+		.append("g")
+		.classed("alignedChart", true);
+	
+	for (var c in alignedCategoryOrder) {
+		var category = alignedCategoryOrder[c];
+		var rects = alignedCharts.selectAll("rect." + category)
+			.data(function(d) {
+				var data = {
+					category: category,
+					value: d[category],
+					university: d.name
+				}
+				return ([data]);
+			});
+		
+		rects.transition()
+			.duration(2000)
+			.attr("x", function(d) {
+				var index = currentColumnOrder.indexOf(d.university);
+				var subindex = alignedCategoryOrder.indexOf(d.category);
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
+					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+			});
+		
+		rects.enter()
+			.append("rect")
+			.classed("highlighted", true)
+			.attr("class", category)
+			.attr("width", alignedBarWidth)
+			.attr("height", function(d) {
+				var maxDollars = d3.max([universityInfo.fees.max, universityInfo.salary.max]);
+				return alignedBarHeight * (d.value / maxDollars);
+			})
+			.attr("x", function(d) {
+				var index = currentColumnOrder.indexOf(d.university);
+				var subindex = alignedCategoryOrder.indexOf(d.category);
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
+					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+			})
+			.attr("y", function(d) {
+				return dimensions.svg.height();
+			})
+			.attr("title", function(d) { 
+				return descriptions[d.category] + ": $" + d.value; 
+			})
+			.on("mouseover", function() {
+				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
+				$("rect").each(function() {
+					var thisClassName = d3.select(this).attr("class").split(" ")[0];
+					if (thisClassName != highlightedClassName) {
+						d3.select(this).classed("highlighted", false);
+						d3.select(this).classed("muted", true);
+					}
+				});
+			})
+			.on("mouseout", function() {
+				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
+				$("rect").each(function() {
+					var thisClassName = d3.select(this).attr("class").split(" ")[0];
+					if (thisClassName != highlightedClassName) {
+						d3.select(this).classed("highlighted", true);
+						d3.select(this).classed("muted", false);
+					}
+				});
+			})
+			.on("click", function(d) { 
+				var className = this.className.baseVal;
+				var thisCat = className.substring(0,className.indexOf(" "));
+				if (thisCat == "")
+					thisCat = className;
+				updateStyleOrder({category: thisCat}, "aligned");
+			})
+			.transition()
+			.duration(1000)
+			.attr("y", function(d) {
+				return dimensions.bars.y() + dimensions.bars.height() / 2;
+			});
+	}
+}
+
+var drawGrid = function(svg, dimensions) {
 		var grid = svg.append("g");
 	
 		grid.classed("grid", true);
@@ -729,7 +770,6 @@ var buildEntireChart = function(div, isResizing) {
 				.attr("stroke", "rgb(150,150,150)")
 				.attr("stroke-width", 2)
 				.attr("stroke-dasharray", "5, 5");
-		}
 	
 		addTooltips();
 	}
