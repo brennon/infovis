@@ -289,6 +289,24 @@ var addTooltips = function() {
 		gravity: $.fn.tipsy.autoWE,
 		html: true
 	});
+	
+	$('svg text').tipsy({
+		fade: true,
+		gravity: $.fn.tipsy.autoWE,
+		html: true
+	});
+	
+	$("svg circle").tipsy({
+		fade: true,
+		gravity: $.fn.tipsy.autoNS,
+		html: true
+	});
+	
+	$("svg image").tipsy({
+		fade: true,
+		gravity: $.fn.tipsy.autoNS,
+		html: true
+	});
 }
 
 
@@ -406,6 +424,9 @@ var drawLabels = function(svg, dimensions) {
 		})
 		.attr("dy", function(d) {
 			return this.getBBox().height / 4;
+		})
+		.attr("title", function(d) {
+			return d.description;
 		});
 	
 	restaurantLabels.transition()
@@ -499,12 +520,6 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 		.transition()
 		.duration(1000)
 		.attr("r", function(d) { return circleRadiusScale(d.averageStars()); });
-	
-	$("svg circle").tipsy({
-		fade: true,
-		gravity: $.fn.tipsy.autoWE,
-		html: true
-	});
 }
 
 var drawLogos = function(svg, dimensions, currentColumnOrder) {
@@ -534,7 +549,11 @@ var drawLogos = function(svg, dimensions, currentColumnOrder) {
 		.attr("opacity", 0.0)
 		.transition()
 		.duration(2000)
-		.attr("opacity", 1.0);
+		.attr("opacity", 1.0)
+		.attr("title", function(d) {
+			var text = ""
+			return text += d.name;
+		});
 }
 
 var drawBarCharts = function(svg, dimensions, currentColumnOrder) {

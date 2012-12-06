@@ -9,7 +9,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - <del>Bar margins</del>
 - $-bar colors
 - <del>Include style name in restaurant tooltip</del>
-- Style label/university tooltips
+- <del>Style label/university tooltips</del>
 - Put average rating line per category
 - Put sorted by, legend, instructions at top
 - Scales (incl. mini scale)
