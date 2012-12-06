@@ -866,5 +866,3 @@ window.onresize = function() {
 	draw(true);
 	// playSound();
 }
-
-start();
