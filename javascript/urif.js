@@ -372,7 +372,7 @@ var buildEntireChart = function(div, isResizing) {
 			.append("svg")
 			.attr("width", dimensions.svg.width())
 			.attr("height", dimensions.svg.height());
-			
+	
 	// Otherwise, draw in the existing SVG element
 	} else {
 		svg = d3.select("svg");
@@ -523,30 +523,39 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 }
 
 var drawLogos = function(svg, dimensions, currentColumnOrder) {
+	var clip = svg.append("clipPath")
+        .attr("id", "logoClip")
+        .append("svg:rect")
+        .attr("id", "clip-rect")
+        .attr("width", function(d) { return dimensions.columns.width() - 5; })
+        .attr("height", function(d) { return dimensions.columns.width() - 5; })
+		.attr("rx", 5)
+		.attr("ry", 5);
 	
 	var logos = svg.selectAll("image.universityLogo")
 		.data(universities, function(d) { return d.name; });
 	
 	logos.transition()
 		.duration(2000)
-		.attr("x", function(d, i) {
-			return dimensions.restaurantLabels.width() + dimensions.columns.width() * i;
-		})
-		.attr("y", function(d) { return dimensions.bubbles.height(); })
-		.attr("height", function(d) { return dimensions.columns.width(); })
-		.attr("width", function(d) { return dimensions.columns.width(); });
+		.attr("transform", function(d, i) {
+			var x = dimensions.restaurantLabels.width() + dimensions.columns.width() * i + 2.5;
+			var y = dimensions.bubbles.height() + 2.5;
+			return "translate("+x+","+y+")";
+		});
 	
 	logos.enter()
 		.append("image")
 		.classed("universityLogo", true)
-		.attr("x", function(d, i) {
-			return dimensions.restaurantLabels.width() + dimensions.columns.width() * i;
+		.attr("transform", function(d, i) {
+			var x = dimensions.restaurantLabels.width() + dimensions.columns.width() * i + 2.5;
+			var y = dimensions.bubbles.height() + 2.5;
+			return "translate("+x+","+y+")";
 		})
-		.attr("y", function(d) { return dimensions.bubbles.height() + 2.5; })
-		.attr("height", function(d) { return dimensions.columns.width(); })
-		.attr("width", function(d) { return dimensions.columns.width(); })
+		.attr("height", function(d) { return dimensions.columns.width() - 5; })
+		.attr("width", function(d) { return dimensions.columns.width() - 5; })
 		.attr("xlink:href", function(d) { return d.logo; })
 		.attr("opacity", 0.0)
+		.attr("clip-path", "url(#logoClip)")
 		.transition()
 		.duration(2000)
 		.attr("opacity", 1.0)
