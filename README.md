@@ -4,6 +4,8 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
+- Reset button
+- Update university data with corrected 100% values
 - <del>Bar margins</del>
 - $-bar colors
 - Include style name in restaurant tooltip
