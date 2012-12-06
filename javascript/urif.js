@@ -524,17 +524,17 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 
 var drawLogos = function(svg, dimensions, currentColumnOrder) {
 	var clip = svg.append("clipPath")
-        .attr("id", "logoClip")
-        .append("svg:rect")
-        .attr("id", "clip-rect")
-        .attr("width", function(d) { return dimensions.columns.width() - 5; })
-        .attr("height", function(d) { return dimensions.columns.width() - 5; })
+		.attr("id", "logoClip")
+		.append("svg:rect")
+		.attr("id", "clip-rect")
+		.attr("width", function(d) { return dimensions.columns.width() - 5; })
+		.attr("height", function(d) { return dimensions.columns.width() - 5; })
 		.attr("rx", 5)
 		.attr("ry", 5);
 	
 	var logos = svg.selectAll("image.universityLogo")
-		.data(universities, function(d) { return d.name; });
-	
+			.data(universities, function(d) { return d.name; });
+
 	logos.transition()
 		.duration(2000)
 		.attr("transform", function(d, i) {
@@ -621,6 +621,7 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 				.append("rect")
 				.attr("class", category + "-" + subcategory)
 				.classed("highlighted", true)
+				.classed("stat", true)
 				.attr("width", stackedBarWidth)
 				.attr("height", function(d) { return stackedBarHeight * d.value; })
 				.attr("x", function(d) {
@@ -640,7 +641,7 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 				})
 				.on("mouseover", function() {
 					var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-					$("rect").each(function() {
+					$("rect.stat").each(function() {
 						var thisClassName = d3.select(this).attr("class").split(" ")[0];
 						if (thisClassName != highlightedClassName) {
 							d3.select(this).classed("highlighted", false);
@@ -650,7 +651,7 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 				})
 				.on("mouseout", function() {
 					var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-					$("rect").each(function() {
+					$("rect.stat").each(function() {
 						var thisClassName = d3.select(this).attr("class").split(" ")[0];
 						if (thisClassName != highlightedClassName) {
 							d3.select(this).classed("highlighted", true);
@@ -708,8 +709,9 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 		
 		rects.enter()
 			.append("rect")
-			.classed("highlighted", true)
 			.attr("class", category)
+			.classed("highlighted", true)
+			.classed("stat", true)
 			.attr("width", alignedBarWidth)
 			.attr("height", function(d) {
 				var maxDollars = d3.max([universityInfo.fees.max, universityInfo.salary.max]);
@@ -728,7 +730,7 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 			})
 			.on("mouseover", function() {
 				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-				$("rect").each(function() {
+				$("rect.stat").each(function() {
 					var thisClassName = d3.select(this).attr("class").split(" ")[0];
 					if (thisClassName != highlightedClassName) {
 						d3.select(this).classed("highlighted", false);
@@ -738,7 +740,7 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 			})
 			.on("mouseout", function() {
 				var highlightedClassName = d3.select(this).attr("class").split(" ")[0];
-				$("rect").each(function() {
+				$("rect.stat").each(function() {
 					var thisClassName = d3.select(this).attr("class").split(" ")[0];
 					if (thisClassName != highlightedClassName) {
 						d3.select(this).classed("highlighted", true);
