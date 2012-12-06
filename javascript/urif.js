@@ -544,7 +544,9 @@ var drawBarCharts = function(svg, dimensions, currentColumnOrder) {
 
 var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 	var numberOfStackedBars = stackedCategoryOrder.length;
-	var stackedBarWidth = (dimensions.columns.width() / numberOfStackedBars) - 1;
+	var barMargin = 1;
+	var chartMargin = 4;
+	var stackedBarWidth = (dimensions.columns.width() - (barMargin * (numberOfStackedBars - 1)) - (chartMargin * 2)) / numberOfStackedBars;
 	var stackedBarHeight = (dimensions.bars.height() / 2) - 2;
 	
 	var stackedCharts = svg.selectAll("g.stackedChart")
@@ -576,8 +578,7 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 				.attr("x", function(d) {
 					var index = currentColumnOrder.indexOf(d.university);
 					var subindex = stackedCategoryOrder.indexOf(d.category);
-					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth) +
-						((dimensions.columns.width() - (numberOfStackedBars * stackedBarWidth)) / numberOfStackedBars) * subindex;
+					return dimensions.bars.x() + (index * dimensions.columns.width()) + chartMargin + (subindex * stackedBarWidth) + (subindex * barMargin);
 				})
 				.attr("y", function(d) {
 					var index = stackedSubcategoryOrders[d.category].indexOf(d.subcategory);
@@ -597,15 +598,14 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 				.attr("x", function(d) {
 					var index = currentColumnOrder.indexOf(d.university);
 					var subindex = stackedCategoryOrder.indexOf(d.category);
-					return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * stackedBarWidth) +
-						((dimensions.columns.width() - (numberOfStackedBars * stackedBarWidth)) / numberOfStackedBars) * subindex;
+					return dimensions.bars.x() + (index * dimensions.columns.width()) + chartMargin + (subindex * stackedBarWidth) + (subindex * barMargin);
 				})
 				.attr("y", dimensions.svg.height())
-				.attr("title", function(d) { 
+				.attr("title", function(d) {
 					var percent = d.value * 100;
 					return descriptions[d.subcategory] + ": " + percent.toFixed(0) + "%"; 
 				})
-				.on("click", function(d) { 
+				.on("click", function(d) {
 					var className = this.className.baseVal;
 					var thisCat = className.substring(0,className.indexOf("-"));
 					updateStyleOrder({subcategory: d.subcategory, category: thisCat}, "stacked");
@@ -646,9 +646,11 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 
 var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 	var numberOfAlignedBars = alignedCategoryOrder.length;
-	var alignedBarWidth = (dimensions.columns.width() / numberOfAlignedBars) - 1;
+	var barMargin = 1;
+	var chartMargin = 4;
+	var alignedBarWidth = (dimensions.columns.width() - (barMargin * (numberOfAlignedBars - 1)) - (chartMargin * 2)) / numberOfAlignedBars;
 	var alignedBarHeight = (dimensions.bars.height() / 2) - 2;
-	
+		
 	var alignedCharts = svg.selectAll("g.alignedChart")
 		.data(universities, function(d) { return d.name; });
 	
@@ -673,8 +675,7 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 			.attr("x", function(d) {
 				var index = currentColumnOrder.indexOf(d.university);
 				var subindex = alignedCategoryOrder.indexOf(d.category);
-				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
-					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + chartMargin + (subindex * alignedBarWidth) + (subindex * barMargin);
 			});
 		
 		rects.enter()
@@ -689,8 +690,7 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 			.attr("x", function(d) {
 				var index = currentColumnOrder.indexOf(d.university);
 				var subindex = alignedCategoryOrder.indexOf(d.category);
-				return dimensions.bars.x() + (index * dimensions.columns.width()) + (subindex * alignedBarWidth) +
-					((dimensions.columns.width() - (numberOfAlignedBars * alignedBarWidth)) / numberOfAlignedBars) * subindex;
+				return dimensions.bars.x() + (index * dimensions.columns.width()) + chartMargin + (subindex * alignedBarWidth) + (subindex * barMargin);
 			})
 			.attr("y", function(d) {
 				return dimensions.svg.height();
@@ -751,7 +751,7 @@ var drawGrid = function(svg, dimensions) {
 				.attr("x2", dimensions.bubbles.x() + dimensions.bubbles.width())
 				.attr("y2", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
 				.attr("stroke", "rgb(150,150,150)")
-				.attr("stroke-width", 2)
+				.attr("stroke-width", 1)
 				.attr("stroke-dasharray", "5, 5");
 		}
 	
@@ -768,7 +768,7 @@ var drawGrid = function(svg, dimensions) {
 				.attr("x2", dimensions.bubbles.x() + (i * dimensions.columns.width()))
 				.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height())
 				.attr("stroke", "rgb(150,150,150)")
-				.attr("stroke-width", 2)
+				.attr("stroke-width", 1)
 				.attr("stroke-dasharray", "5, 5");
 	
 		addTooltips();
