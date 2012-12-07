@@ -12,10 +12,24 @@
 				height: 93%;
 			}
 			div#header {
+				height: 5%;
 				text-align: center;
 				font-size: 36px;
 				margin-top: 20px;
 				font-family: 'Holtwood One SC', serif;
+			}
+			div#legend {
+				position: absolute;
+				padding-top: 30px 0 0 20px;
+				top: 3%;
+				right: 2.5%;
+				width: 10%;
+				height: 56px;
+				font-family: sans-serif;
+				text-align: right;
+			}
+			a {
+				text-decoration: none;
 			}
 			rect.fees { fill: lightsalmon; }
 			rect.salary { fill: lightblue; }
@@ -60,7 +74,7 @@
 				        return;
 				    }
 
-				    urifStart();
+				    startURIF();
 				});
 			});
 		</script>
@@ -68,5 +82,8 @@
 	<body>
 		<div id="header">URIF</div>
 		<div id="visualization"></div>
+		<div id="legend">
+			<a href="javascript:resetURIF()">Reset</a>
+		</div>
 	</body>
 </html>

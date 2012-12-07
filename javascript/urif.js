@@ -401,8 +401,10 @@ var buildEntireChart = function(div, isResizing) {
 	drawLabels(svg, dimensions);
 	drawColumns(svg, dimensions);
 	
-	if (isResizing)
+	if (isResizing) {
 		drawGrid(svg, dimensions);
+		drawLegend();
+	}
 }
 
 var drawLabels = function(svg, dimensions) {
@@ -805,6 +807,26 @@ var drawGrid = function(svg, dimensions) {
 	}
 };
 
+var drawLegend = function() {
+	// var divName = "div#legend";
+	// 
+	// var container = $(divName);
+	// container.empty();
+	// 
+	// var svg = d3.select(divName).append("svg")
+	// 	.attr("height", 100)
+	// 	.attr("width", 100);
+	// 
+	// svg.append("rect")
+	// 	// .attr("transform", function() { return "translate(0,0)"; })
+	// 	.attr("x", 0)
+	// 	.attr("y", 0)
+	// 	.attr("rx", 15)
+	// 	.attr("width", 90)
+	// 	.attr("height", 40)
+	// 	.attr("fill", "rgb(10,10,10)");
+}
+
 
 /************************************************************
  * Event handler helpers
@@ -833,7 +855,7 @@ var updateStyleOrder = function(d, key) {
 		alignedCategoryOrder.splice(index, 1);
 		alignedCategoryOrder.unshift(d.category);
 	}
-	draw(false);
+	drawURIF(false);
 }
 
 function playSound() {
@@ -845,7 +867,7 @@ function playSound() {
  * Setup routines
  ************************************************************/
 // Initial build
-var urifStart = function() {
+var startURIF = function() {
 	importCSVData(csvCallback);
 };
 
@@ -853,18 +875,34 @@ var parseCSVData = function() {
 	parseUniversitySummaryData();
 	parseUniversitiesData();
 	parseRestaurantsData();
-	draw(true);
+	drawURIF(true);
 };
 
 var csvCallback = function() {
 	if (++dataFilesLoaded == dataFiles) parseCSVData();
 };
 
-var draw = function(isResizing) {
+var drawURIF = function(isResizing) {
 	buildEntireChart("div#visualization", isResizing);
 };
 
+var resetURIF = function() {
+	mainSortKey = "restaurants";
+	styleOrder = ["american", "african", "asian", "european", "latin_american", "middle_eastern", "mediterranean", "mexican", "uncategorized"];
+	alignedCategoryOrder = ["salary", "fees"];
+	stackedCategoryOrder = ["people", "genders", "residencies","ethnicities"];
+	stackedSubcategoryOrders = {
+		people: ["undergrads", "grads", "faculty"],
+		genders: ["male", "female"],
+		statuses: ["full_time", "part_time"],
+		residencies: ["out_of_state", "in_state", "international", "unknown_residence"],
+		ethnicities: ["white","hispanic","asian","nonresident_alien","other"]
+	};
+	
+	drawURIF(false);
+};
+
 window.onresize = function() {
-	draw(true);
+	drawURIF(true);
 	// playSound();
 }

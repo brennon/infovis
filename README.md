@@ -5,7 +5,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 ## To-Do ##
 
 - <div>Rounded corners for logos</div>
-- Reset button
+- <div>Reset button</div>
 - <del>Update university data with corrected 100% values</del>
 - <del>Bar margins</del>
 - $-bar colors
