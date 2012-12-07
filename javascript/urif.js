@@ -421,8 +421,6 @@ var buildEntireChart = function(div, isResizing) {
 	
 	customStyleOrder = styleOrder;
 	customUniversityOrder = universities.map(function(u) { return u.id; });
-	console.log(customStyleOrder);
-	console.log(customUniversityOrder);
 	
 	d3.select("#sortDescription").text(sortDescription);
 	
@@ -618,7 +616,7 @@ var drawLogos = function(svg, dimensions, currentColumnOrder) {
 		.attr("xlink:href", function(d) { return d.logo; })
 		.attr("opacity", 0.0)
 		.attr("clip-path", "url(#logoClip)")
-		.call(drag)
+		// .call(drag)
 		// .on("click", function(d) { updateStyleOrder(d, "university"); })
 		.transition()
 		.duration(2000)
