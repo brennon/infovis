@@ -343,7 +343,9 @@ var buildEntireChart = function(div, isResizing) {
 			width: function() { return dimensions.svg.width() * 0.05; },
 		},
 		columns: {
-			width: function() { return (dimensions.svg.width() - dimensions.restaurantLabels.width()) / universities.length; },
+			width: function() {
+				return (dimensions.svg.width() - dimensions.restaurantLabels.width()) / universities.length;
+			},
 		},
 		bubbles: {
 			x: function() { return dimensions.restaurantLabels.width(); },
@@ -425,7 +427,7 @@ var drawLabels = function(svg, dimensions) {
 		.append("text")
 		.classed("restaurantLabel", true)
 		.text(function(d) { return d.description; })
-		.attr("x", 0)
+		.attr("x", -100)
 		.attr("y", function(d, i) {
 			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);
 		})
@@ -434,7 +436,10 @@ var drawLabels = function(svg, dimensions) {
 		})
 		.attr("title", function(d) {
 			return d.description;
-		});
+		})
+		.transition()
+		.duration(2000)
+		.attr("x", 0);
 	
 	restaurantLabels.transition()
 		.duration(2000)
@@ -549,8 +554,7 @@ var drawLines = function(svg, dimensions, currentColumnOrder) {
 		.transition()
 		.delay(2000)
 		.duration(1000)
-		// .transition()
-		// .duration(1000)
+		.attr("stroke-dasharray", "2, 2")
 		.attr("y1", dimensions.bubbles.y())
 		.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height());
 }
@@ -801,41 +805,70 @@ var drawGrid = function(svg, dimensions) {
 	
 		grid.classed("grid", true);
 	
-		for (var i = 0; i < styleOrder.length + 1; i++) {
+		for (var i = 1; i < styleOrder.length; i++) {
 			grid.append("line")
-				.attr("x1", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
-				.attr("y1", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
-				.attr("x2", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
-				.attr("y2", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.attr("x1", dimensions.bubbles.x() + (dimensions.bubbles.width() / 2))
+				.attr("y1", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
+				.attr("x2", dimensions.bubbles.x() + (dimensions.bubbles.width() / 2))
+				.attr("y2", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
+				.attr("stroke", "rgb(20,20,20)")
+				.attr("stroke-width", 1)
+				.attr("stroke-dasharray", "3, 3")
 				.transition()
 				.duration(2000)
 				.attr("x1", dimensions.bubbles.x())
 				.attr("y1", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
 				.attr("x2", dimensions.bubbles.x() + dimensions.bubbles.width())
-				.attr("y2", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()))
-				.attr("stroke", "rgb(150,150,150)")
-				.attr("stroke-width", 1)
-				.attr("stroke-dasharray", "5, 5");
+				.attr("y2", dimensions.bubbles.y() + (i * dimensions.rows.bubbles.height()));
 		}
 	
-		for (var i = 0; i < universities.length + 1; i++) {
+		for (var i = 1; i < universities.length; i++) {
 			grid.append("line")
-				.attr("x1", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
-				.attr("y1", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
-				.attr("x2", (dimensions.bubbles.width() / 2) + dimensions.bubbles.x())
-				.attr("y2", (dimensions.bubbles.height() / 2) + dimensions.bubbles.x())
+				.attr("x1", dimensions.bubbles.x() + (i * dimensions.columns.width()))
+				.attr("y1", dimensions.bubbles.y() + (dimensions.bubbles.height() / 2))
+				.attr("x2", dimensions.bubbles.x() + (i * dimensions.columns.width()))
+				.attr("y2", dimensions.bubbles.y() + (dimensions.bubbles.height() / 2))
+				.attr("stroke", "rgb(20,20,20)")
+				.attr("stroke-width", 1)
+				.attr("stroke-dasharray", "3, 3")
 				.transition()
 				.duration(2000)
 				.attr("x1", dimensions.bubbles.x() + (i * dimensions.columns.width()))
 				.attr("y1", dimensions.bubbles.y())
 				.attr("x2", dimensions.bubbles.x() + (i * dimensions.columns.width()))
-				.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height())
-				.attr("stroke", "rgb(150,150,150)")
-				.attr("stroke-width", 1)
-				.attr("stroke-dasharray", "5, 5");
+				.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height());
 	
 		addTooltips();
 	}
+	
+	var lineScale = d3.scale.linear()
+		.domain([starRange[0], starRange[1]])
+		.range([0, dimensions.columns.width() / 2]);
+	
+	for (var i = starRange[0]; i <= starRange[1]; i++) {
+		grid.append("line")
+			.classed("scale", true)
+			.attr("x1", dimensions.bubbles.x() + lineScale(i))
+			.attr("y1", dimensions.bubbles.y())
+			.attr("x2", dimensions.bubbles.x() + lineScale(i))
+			.attr("y2", dimensions.bubbles.y() + 5)
+			.attr("stroke", "rgb(20,20,20)")
+			.attr("stroke-width", 1);
+	}
+	
+	for (var i = starRange[0]; i <= starRange[1]; i++) {
+		grid.append("text")
+			.classed("scale", true)
+			.attr("x", dimensions.bubbles.x() + lineScale(i))
+			.attr("y", dimensions.bubbles.y())
+			.attr("dx", -2)
+			.attr("dy", 13)
+			.text(function() {
+				var label = starRange[1] + starRange[0] - i;
+				return label.toString()
+			});
+	}
+	
 };
 
 var drawLegend = function() {

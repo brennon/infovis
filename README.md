@@ -13,7 +13,8 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - <del>Style label/university tooltips</del>
 - <del>Put average rating line per category</del>
 - Put sorted by, legend, instructions at top
-- Scales (incl. mini scale)
+- <del>Bubble scale</del>
+- <del>Bar scales</del>
 - Style images
 - Highlight the selected/sorted by restaurant style
 - <del>Align tooltip text left</del>
