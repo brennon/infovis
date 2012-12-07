@@ -48,6 +48,7 @@ var universityInfo = {
 // Global restaurant data
 var restaurantInfo = { mostReviews: 0, leastReviews: 10000000 };
 var uniqueRestaurantStatID = 0;
+var starRange = [2, 5];
 
 // Datasets
 var universities, restaurants;
@@ -141,6 +142,8 @@ var parseRestaurantData = function(restaurant) {
 	university.restaurantStats[restaurant.category].totalReviews += +restaurant.review_count;
 	
 	university.restaurantStats[restaurant.category].totalRestaurants++;
+	university.totalRestaurantStars += +restaurant.stars;
+	university.averageRestaurantStars = university.totalRestaurantStars / university.restaurants.length;
 };
 
 // Object to hold restaurant category statistics
@@ -250,6 +253,8 @@ var parseIndividualUniversityData = function(university) {
 	
 	university.id = parseInt(university.id);
 	university.restaurants = [];
+	university.averageRestaurantStars = 0;
+	university.totalRestaurantStars = 0;
 	
 	university.restaurantStats = {};
 };
@@ -459,6 +464,7 @@ var drawColumns = function(svg, dimensions) {
 		.attr("height", dimensions.svg.height())
 		.attr("id", function(d) { return d.name; });
 	
+	drawLines(svg, dimensions, currentColumnOrder);
 	drawBubbles(svg, dimensions, currentColumnOrder);
 	drawLogos(svg, dimensions, currentColumnOrder);
 	drawBarCharts(svg, dimensions, currentColumnOrder);
@@ -466,14 +472,9 @@ var drawColumns = function(svg, dimensions) {
 
 var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 	
-	var circleRadiusScale = d3.scale.pow()
+	var circleRadiusScale = d3.scale.linear()
 		.domain([2, 5])
-		.range([0, (dimensions.rows.bubbles.height() / 2)])
-		.exponent(1.5);
-	
-	// var circleRadiusScale = d3.scale.linear()
-	// 	.domain([2, 5])
-	// 	.range([0, (dimensions.rows.bubbles.height() / 2)]);
+		.range([0, (dimensions.rows.bubbles.height() / 2)]);
 	
 	var circleColorScale = d3.scale.log()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
@@ -522,6 +523,36 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 		.transition()
 		.duration(1000)
 		.attr("r", function(d) { return circleRadiusScale(d.averageStars()); });
+}
+
+var drawLines = function(svg, dimensions, currentColumnOrder) {
+	var lineScale = d3.scale.linear()
+		.domain([2, 5])
+		.range([(dimensions.columns.width() / 2), dimensions.columns.width()]);
+	
+	var averageLines = svg.selectAll("line.averageLine")
+		.data(universities, function(d) { return d.name; });
+	
+	averageLines.enter()
+		.append("line")
+		.classed("averageLine", true)
+		.attr("transform", function(d, i) {
+			var x = (i * dimensions.columns.width()) + (lineScale(d.averageRestaurantStars));
+			return "translate("+x+",0)";
+		})
+		.attr("stroke", "rgb(0,0,0)")
+		.attr("stroke-width", 0.5)
+		.attr("x1", dimensions.bubbles.x())
+		.attr("x2", dimensions.bubbles.x())
+		.attr("y1", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
+		.attr("y2", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
+		.transition()
+		.delay(2000)
+		.duration(1000)
+		// .transition()
+		// .duration(1000)
+		.attr("y1", dimensions.bubbles.y())
+		.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height());
 }
 
 var drawLogos = function(svg, dimensions, currentColumnOrder) {

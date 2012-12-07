@@ -11,7 +11,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - $-bar colors
 - <del>Include style name in restaurant tooltip</del>
 - <del>Style label/university tooltips</del>
-- Put average rating line per category
+- <del>Put average rating line per category</del>
 - Put sorted by, legend, instructions at top
 - Scales (incl. mini scale)
 - Style images
