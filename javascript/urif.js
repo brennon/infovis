@@ -75,9 +75,9 @@ var stackedSubcategoryOrders = {
 var descriptions = {
 	undergrads: "Undergraduate Students",
 	grads: "Graduate Students",
-	faculty: "Faculty",
-	male: "Males",
-	female: "Females",
+	faculty: "Faculty Members",
+	male: "Male Students",
+	female: "Female Students",
 	full_time: "Full-Time Students",
 	part_time: "Part-Time Students",
 	in_state: "In-State Students",
@@ -85,24 +85,24 @@ var descriptions = {
 	international: "International Students",
 	unknown_residence: "Unknown Residence",
 	nonresident_alien: "Non-Resident Alien",
-	hispanic: "Hispanic",
-	islander: "Islander",
-	black: "Black/African-American",
-	asian: "Asian",
-	alaskan: "Alaskan",
-	unknown_race: "Unknown Race",
-	white: "White/Caucasian",
-	mixed_race: "Mixed Race",
-	other: "Other",
-	american: "American",
-	african: "African",
-	asian: "Asian",
-	european: "European",
-	latin_american: "Latin American",
-	middle_eastern: "Middle Eastern",
-	mediterranean: "Mediterranean",
-	mexican: "Mexican",
-	uncategorized: "Uncategorized",
+	hispanic: "Hispanic Students",
+	islander: "Islander Students",
+	black: "Black/African-American Students",
+	asian: "Asian Students",
+	alaskan: "Alaskan Students",
+	unknown_race: "Students of Unknown Race",
+	white: "White/Caucasian Students",
+	mixed_race: "Mixed Race Students",
+	other: "Other Race",
+	american: "American Restaurants",
+	african: "African Restaurants",
+	asian: "Asian Restaurants",
+	european: "European Restaurants",
+	latin_american: "Latin American Restaurants",
+	middle_eastern: "Middle Eastern Restaurants",
+	mediterranean: "Mediterranean Restaurants",
+	mexican: "Mexican Restaurants",
+	uncategorized: "Uncategorized Restaurants",
 	salary: "Average Faculty Salary",
 	fees: "Annual Cost of Attendance"
 };
@@ -387,9 +387,11 @@ var buildEntireChart = function(div, isResizing) {
 	}
 	
 	// Sort universities based on the current sort order
+	var sortDescription = "";
 	universities = universities.sort(function(a, b) {
 		var compareA, compareB;
 		if (mainSortKey == "restaurants") {
+			sortDescription = descriptions[styleOrder[0]];
 			var aStats = a.restaurantStats[styleOrder[0]];
 			var bStats = b.restaurantStats[styleOrder[0]];
 			if (aStats === undefined) compareA = 0.0;
@@ -397,14 +399,18 @@ var buildEntireChart = function(div, isResizing) {
 			if (bStats === undefined) compareB = 0.0;
 			else compareB = bStats.averageStars();
 		} else if (mainSortKey == "stacked") {
+			sortDescription = descriptions[stackedSubcategoryOrders[stackedCategoryOrder[0]][0]];
 			compareA = a[stackedCategoryOrder[0]][stackedSubcategoryOrders[stackedCategoryOrder[0]][0]];
 			compareB = b[stackedCategoryOrder[0]][stackedSubcategoryOrders[stackedCategoryOrder[0]][0]];
 		} else if (mainSortKey == "aligned") {
+			sortDescription = descriptions[alignedCategoryOrder[0]];
 			compareA = a[alignedCategoryOrder[0]];
 			compareB = b[alignedCategoryOrder[0]];
 		}
 		return compareB - compareA;
 	});
+	
+	d3.select("#sortDescription").text(sortDescription);
 	
 	drawLabels(svg, dimensions);
 	drawColumns(svg, dimensions);
@@ -427,7 +433,7 @@ var drawLabels = function(svg, dimensions) {
 	restaurantLabels.enter()
 		.append("text")
 		.classed("restaurantLabel", true)
-		.text(function(d) { return d.description; })
+		.text(function(d) { return d.description.substring(0, d.description.indexOf(" ")); })
 		.attr("x", -100)
 		.attr("y", function(d, i) {
 			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);

@@ -4,8 +4,8 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
-- $-bar colors
-- Put sorted by, legend, instructions at top
+- Legend
+- Instructions
 - Style images
 - Highlight the selected/sorted by restaurant style
 - Circle radius scale
@@ -13,6 +13,8 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - Draggable regions
 - Sort by university
 - Debounce highlighting
+- $-bar colors *(Panagiotis)*
+- <del>Sorted by display</del>
 - <div>Rounded corners for logos</div>
 - <div>Reset button</div>
 - <del>Update university data with corrected 100% values</del>
