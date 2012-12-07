@@ -5,14 +5,14 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 ## To-Do ##
 
 - Instructions
-- Style images
 - Highlight the selected/sorted by restaurant style
-- Circle radius scale
-- Reorder by style label
 - Draggable regions
 - Sort by university
 - Debounce highlighting
 - $-bar colors *(Panagiotis)*
+- <del>Circle radius scale</del>
+- <del>Reorder by style label</del>
+- <del>Style images</del>
 - <del>Legend</del>
 - <del>Sorted by display</del>
 - <div>Rounded corners for logos</div>

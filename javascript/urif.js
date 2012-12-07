@@ -449,9 +449,10 @@ var drawLabels = function(svg, dimensions) {
 		.attr("title", function(d) {
 			return d.description;
 		})
-		// .transition()
-		// .duration(1000)
-		.attr("x", 0);
+		.attr("x", 0)
+		.on("click", function(d) { 
+			updateStyleOrder(d.name, "restaurants");
+		});
 	
 	restaurantLabels.transition()
 		.duration(2000)
