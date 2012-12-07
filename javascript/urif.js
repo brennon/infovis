@@ -308,9 +308,15 @@ var addTooltips = function() {
 		html: true
 	});
 	
-	$("svg image").tipsy({
+	$("svg image.universityLogo").tipsy({
 		fade: true,
 		gravity: $.fn.tipsy.autoNS,
+		html: true
+	});
+	
+	$("svg image.restaurantLabel").tipsy({
+		fade: true,
+		gravity: $.fn.tipsy.autoWE,
 		html: true
 	});
 }
@@ -423,7 +429,7 @@ var buildEntireChart = function(div, isResizing) {
 
 var drawLabels = function(svg, dimensions) {
 	
-	var restaurantLabels = svg.selectAll("text.restaurantLabel")
+	var restaurantLabels = svg.selectAll("image.restaurantLabel")
 		.data(function() {
 			return styleOrder.map(function(d) {
 				return {name: d, description: descriptions[d]};
@@ -431,31 +437,26 @@ var drawLabels = function(svg, dimensions) {
 		}, function(d) { return d.name; });
 	
 	restaurantLabels.enter()
-		.append("text")
+		.append("image")
 		.classed("restaurantLabel", true)
-		.text(function(d) { return d.description.substring(0, d.description.indexOf(" ")); })
 		.attr("x", -100)
+		.attr("height", function(d) { return dimensions.columns.width() - 5; })
+		.attr("width", function(d) { return dimensions.columns.width() - 5; })
 		.attr("y", function(d, i) {
-			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);
+			return (dimensions.rows.bubbles.height() * i);
 		})
-		.attr("dy", function(d) {
-			return this.getBBox().height / 4;
-		})
+		.attr("xlink:href", function(d) { console.log("./images/"+d.name+".png"); return "./images/"+d.name+".png"; })
 		.attr("title", function(d) {
 			return d.description;
 		})
-		.transition()
-		.duration(2000)
+		// .transition()
+		// .duration(1000)
 		.attr("x", 0);
 	
 	restaurantLabels.transition()
 		.duration(2000)
-		.attr("x", 0)
 		.attr("y", function(d, i) {
-			return (dimensions.rows.bubbles.height() * i) + (dimensions.rows.bubbles.height() * 0.5);
-		})
-		.attr("dy", function(d) {
-			return this.getBBox().height / 4;
+			return (dimensions.rows.bubbles.height() * i);
 		});
 }
 
