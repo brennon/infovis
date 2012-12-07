@@ -4,25 +4,25 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
-- <div>Rounded corners for logos</div>
-- <div>Reset button</div>
-- <del>Update university data with corrected 100% values</del>
-- <del>Bar margins</del>
 - $-bar colors
-- <del>Include style name in restaurant tooltip</del>
-- <del>Style label/university tooltips</del>
-- <del>Put average rating line per category</del>
 - Put sorted by, legend, instructions at top
-- <del>Bubble scale</del>
-- <del>Bar scales</del>
 - Style images
 - Highlight the selected/sorted by restaurant style
-- <del>Align tooltip text left</del>
 - Circle radius scale
 - Reorder by style label
 - Draggable regions
 - Sort by university
 - Debounce highlighting
+- <div>Rounded corners for logos</div>
+- <div>Reset button</div>
+- <del>Update university data with corrected 100% values</del>
+- <del>Bar margins</del>
+- <del>Include style name in restaurant tooltip</del>
+- <del>Style label/university tooltips</del>
+- <del>Put average rating line per category</del>
+- <del>Bubble scale</del>
+- <del>Bar scales</del>
+- <del>Align tooltip text left</del>
 - <del>Check review count tabulation</del>
 - <del>Transitions</del>
 - <del>Fix tooltips</del>

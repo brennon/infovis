@@ -184,7 +184,8 @@ var parseUniversitySummaryData = function() {
 	// Calculate maximum and minimum costs and salaries across universities
 	universityInfo.fees.max = d3.max(costs);
 	universityInfo.fees.min = d3.min(costs);
-	universityInfo.salary.max = d3.max(salaries);
+	// universityInfo.salary.max = d3.max(salaries);
+	universityInfo.salary.max = 150000;
 	universityInfo.salary.min = d3.min(salaries);
 };
 
@@ -481,9 +482,10 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 		.domain([2, 5])
 		.range([0, (dimensions.rows.bubbles.height() / 2)]);
 	
-	var circleColorScale = d3.scale.log()
+	var circleColorScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([0.25,0.95]);
+		.range([1,0.2])
+		.exponent(0.05);
 	
 	var allRestaurantStats = [];
 	universities.forEach(function(d) {
@@ -513,7 +515,7 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 			var index = currentColumnOrder.indexOf(d.university);
 			return dimensions.bubbles.x() + (index * dimensions.columns.width()) + (dimensions.columns.width() / 2);
 		})
-		.attr("fill", function(d) { return d3.hsl(30,1,circleColorScale(d.totalReviews)).toString(); })
+		.attr("fill", function(d) { return d3.hsl(30,circleColorScale(d.totalReviews),0.55); })
 		.attr("cy", function(d) {
 			var index = styleOrder.indexOf(d.category);
 			return (index * dimensions.rows.bubbles.height()) + (dimensions.rows.bubbles.height() / 2);
@@ -612,7 +614,7 @@ var drawStackedBarCharts = function(svg, dimensions, currentColumnOrder) {
 	var barMargin = 1;
 	var chartMargin = 4;
 	var stackedBarWidth = (dimensions.columns.width() - (barMargin * (numberOfStackedBars - 1)) - (chartMargin * 2)) / numberOfStackedBars;
-	var stackedBarHeight = (dimensions.bars.height() / 2) - 2;
+	var stackedBarHeight = (dimensions.bars.height() / 2) - 8;
 	
 	var stackedCharts = svg.selectAll("g.stackedChart")
 		.data(universities, function(d) { return d.name; });
@@ -715,7 +717,7 @@ var drawAlignedBarCharts = function(svg, dimensions, currentColumnOrder) {
 	var barMargin = 1;
 	var chartMargin = 4;
 	var alignedBarWidth = (dimensions.columns.width() - (barMargin * (numberOfAlignedBars - 1)) - (chartMargin * 2)) / numberOfAlignedBars;
-	var alignedBarHeight = (dimensions.bars.height() / 2) - 2;
+	var alignedBarHeight = (dimensions.bars.height() / 2) - 8;
 		
 	var alignedCharts = svg.selectAll("g.alignedChart")
 		.data(universities, function(d) { return d.name; });
@@ -851,7 +853,7 @@ var drawGrid = function(svg, dimensions) {
 			.attr("x1", dimensions.bubbles.x() + lineScale(i))
 			.attr("y1", dimensions.bubbles.y())
 			.attr("x2", dimensions.bubbles.x() + lineScale(i))
-			.attr("y2", dimensions.bubbles.y() + 5)
+			.attr("y2", dimensions.bubbles.y() + 3)
 			.attr("stroke", "rgb(20,20,20)")
 			.attr("stroke-width", 1);
 	}
@@ -862,13 +864,74 @@ var drawGrid = function(svg, dimensions) {
 			.attr("x", dimensions.bubbles.x() + lineScale(i))
 			.attr("y", dimensions.bubbles.y())
 			.attr("dx", -2)
-			.attr("dy", 13)
+			.attr("dy", 11)
 			.text(function() {
 				var label = starRange[1] + starRange[0] - i;
 				return label.toString()
 			});
 	}
 	
+	grid.append("line")
+		.classed("scale", true)
+		.attr("x1", dimensions.bars.x() - 10)
+		.attr("x2", dimensions.bars.x() - 10)
+		.attr("y1", dimensions.bars.y())
+		.attr("y2", (dimensions.bars.y() + (dimensions.bars.height() / 2)) - 8)
+		.attr("stroke", "rgb(20,20,20)")
+		.attr("stroke-width", 1);
+	
+	var singleChartHeight = dimensions.bars.height() - 16;
+	
+	for (var i = 0; i < 5; i++) {
+		grid.append("line")
+			.classed("scale", true)
+			.attr("x1", dimensions.bars.x() - 20)
+			.attr("x2", dimensions.bars.x() - 10)
+			.attr("y1", dimensions.bars.y() + (singleChartHeight * i) / 8)
+			.attr("y2", dimensions.bars.y() + (singleChartHeight * i) / 8)
+			.attr("stroke", "rgb(20,20,20)")
+			.attr("stroke-width", 1);
+		
+		grid.append("text")
+			.classed("scale", true)
+			.attr("x", dimensions.bars.x() - 20)
+			.attr("y", dimensions.bars.y() + (singleChartHeight * i) / 8)
+			.attr("dx", -24)
+			.attr("dy", 3)
+			.text(function() {
+				return (i * 25) + "%";
+			});
+	}
+	
+	grid.append("line")
+		.classed("scale", true)
+		.attr("x1", dimensions.bars.x() - 10)
+		.attr("x2", dimensions.bars.x() - 10)
+		.attr("y1", (dimensions.bars.y() + (dimensions.bars.height() / 2)))
+		.attr("y2", dimensions.bars.y() + dimensions.bars.height() - 8)
+		.attr("stroke", "rgb(20,20,20)")
+		.attr("stroke-width", 1);
+	
+	for (var j = 0; j < 7; j++) {
+		grid.append("line")
+			.classed("scale", true)
+			.attr("x1", dimensions.bars.x() - 20)
+			.attr("x2", dimensions.bars.x() - 10)
+			.attr("y1", dimensions.bars.y() + (dimensions.bars.height() / 2) + (singleChartHeight * j) / 12)
+			.attr("y2", dimensions.bars.y() + (dimensions.bars.height() / 2) + (singleChartHeight * j) / 12)
+			.attr("stroke", "rgb(20,20,20)")
+			.attr("stroke-width", 1);
+		
+		grid.append("text")
+			.classed("scale", true)
+			.attr("x", dimensions.bars.x() - 20)
+			.attr("y", dimensions.bars.y() + (dimensions.bars.height() / 2) + (singleChartHeight * j) / 12)
+			.attr("dx", -24)
+			.attr("dy", 3)
+			.text(function() {
+				return (j * 25) + "K";
+			});
+	}
 };
 
 var drawLegend = function() {
