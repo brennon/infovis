@@ -4,7 +4,6 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
-- Legend
 - Instructions
 - Style images
 - Highlight the selected/sorted by restaurant style
@@ -14,6 +13,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - Sort by university
 - Debounce highlighting
 - $-bar colors *(Panagiotis)*
+- <del>Legend</del>
 - <del>Sorted by display</del>
 - <div>Rounded corners for logos</div>
 - <div>Reset button</div>

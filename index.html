@@ -28,6 +28,41 @@
 				font-family: sans-serif;
 				text-align: right;
 			}
+			#legendImage {
+				height: 400;
+				width: 600;
+			}
+			.yui3-panel {
+			    outline: none;
+				opacity: 0.85;
+			}
+
+			.yui3-panel #panelContent {
+			    -webkit-box-shadow: 0px 0px 2px black;
+			    -moz-box-shadow: 0px 0px 2px black;
+			    box-shadow: 0px 0px 2px black;
+				background: white;
+			}
+			.yui3-panel #panelContent .yui3-widget-hd {
+			    font-weight: bold;
+			    padding: 5px;
+			}
+
+			#panelContent .yui3-widget-bd {
+			    padding: 15px;
+			    background: white;
+			    text-align: center;
+			}
+
+			#panelContent.yui3-widget-loading {
+			    display: none;
+			}
+
+			.yui3-skin-sam .yui3-widget-mask {
+			    background-color: #223460;
+			    opacity: 0.85;
+			}
+			
 			text.scale {
 				font-size: 9px;
 			}
@@ -80,6 +115,57 @@
 				    startURIF();
 				});
 			});
+			
+			YUI().use('transition', 'panel', function (Y) {
+
+			    var openBtn = Y.one('#showLegend'),
+			        panel, bb;
+
+			    function showPanel() {
+			        panel.show();
+			        bb.transition({
+			            duration: 0.5,
+			            top     : '80px'
+			        });
+			    }
+
+			    function hidePanel() {
+			        bb.transition({
+			            duration: 0.5,
+			            top     : '-300px'
+			        }, function () {
+			            panel.hide();
+			        });
+			    }
+
+			    panel = new Y.Panel({
+			        srcNode: '#panelContent',
+			        width  : 650,
+					height : 500,
+			        xy     : [window.innerWidth / 2 - 300, -300],
+			        zIndex : 5,
+			        modal  : true,
+			        visible: false,
+			        render : true,
+			        buttons: [
+			            {
+			                value  : 'Close',
+			                section: 'header',
+			                action : function (e) {
+			                    e.preventDefault();
+			                    hidePanel();
+			                }
+			            }
+			        ]
+			    });
+
+			    bb = panel.get('boundingBox');
+
+			    openBtn.on('click', function (e) {
+			        showPanel();
+			    });
+
+			});
 		</script>
 	</head>
 	<body>
@@ -87,7 +173,18 @@
 		<div id="visualization"></div>
 		<div id="legend">
 			Sorted by: <span id="sortDescription"></span> | 
+			<a href="#" id="showLegend">Legend</a> | 
 			<a href="javascript:resetURIF()">Reset</a>
+			<div id="panelContent" class="yui3-widget-loading">
+			    <div class="yui3-widget-hd">
+			        Legend
+			    </div>
+			    <div class="yui3-widget-bd">
+			        <img id="legendImage" src="./images/legend.png" />
+			    </div>
+				<div class="yui3-widget-ft">
+			    </div>
+			</div>
 		</div>
 	</body>
 </html>
