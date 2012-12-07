@@ -4,12 +4,12 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 
 ## To-Do ##
 
-- Instructions
-- Highlight the selected/sorted by restaurant style
 - Draggable regions
-- Sort by university
 - Debounce highlighting
+- Instructions
 - $-bar colors *(Panagiotis)*
+- <del>Highlight the selected/sorted by restaurant style</del> *(I don't think this makes any sense either...)*
+- <del>Sort by university</del> *(After considering this further, I realize that this doesn't make any sense...)*
 - <del>Circle radius scale</del>
 - <del>Reorder by style label</del>
 - <del>Style images</del>

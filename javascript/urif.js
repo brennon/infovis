@@ -70,6 +70,10 @@ var stackedSubcategoryOrders = {
 	residencies: ["out_of_state", "in_state", "international", "unknown_residence"],
 	ethnicities: ["white","hispanic","asian","nonresident_alien","other"]
 };
+var customUniversityOrder = [];
+var customStyleOrder = [];
+var ordering = "automatic";
+// var sortUniversity = "";
 
 // Description strings for attributes
 var descriptions = {
@@ -184,7 +188,6 @@ var parseUniversitySummaryData = function() {
 	// Calculate maximum and minimum costs and salaries across universities
 	universityInfo.fees.max = d3.max(costs);
 	universityInfo.fees.min = d3.min(costs);
-	// universityInfo.salary.max = d3.max(salaries);
 	universityInfo.salary.max = 150000;
 	universityInfo.salary.min = d3.min(salaries);
 };
@@ -416,6 +419,11 @@ var buildEntireChart = function(div, isResizing) {
 		return compareB - compareA;
 	});
 	
+	customStyleOrder = styleOrder;
+	customUniversityOrder = universities.map(function(u) { return u.id; });
+	console.log(customStyleOrder);
+	console.log(customUniversityOrder);
+	
 	d3.select("#sortDescription").text(sortDescription);
 	
 	drawLabels(svg, dimensions);
@@ -445,7 +453,7 @@ var drawLabels = function(svg, dimensions) {
 		.attr("y", function(d, i) {
 			return (dimensions.rows.bubbles.height() * i);
 		})
-		.attr("xlink:href", function(d) { console.log("./images/"+d.name+".png"); return "./images/"+d.name+".png"; })
+		.attr("xlink:href", function(d) { return "./images/"+d.name+".png"; })
 		.attr("title", function(d) {
 			return d.description;
 		})
@@ -548,6 +556,13 @@ var drawLines = function(svg, dimensions, currentColumnOrder) {
 	var averageLines = svg.selectAll("line.averageLine")
 		.data(universities, function(d) { return d.name; });
 	
+	averageLines.transition()
+		.duration(1000)
+		.attr("transform", function(d, i) {
+			var x = (i * dimensions.columns.width()) + (lineScale(d.averageRestaurantStars));
+			return "translate("+x+",0)";
+		});
+	
 	averageLines.enter()
 		.append("line")
 		.classed("averageLine", true)
@@ -603,6 +618,8 @@ var drawLogos = function(svg, dimensions, currentColumnOrder) {
 		.attr("xlink:href", function(d) { return d.logo; })
 		.attr("opacity", 0.0)
 		.attr("clip-path", "url(#logoClip)")
+		.call(drag)
+		// .on("click", function(d) { updateStyleOrder(d, "university"); })
 		.transition()
 		.duration(2000)
 		.attr("opacity", 1.0)
@@ -611,6 +628,12 @@ var drawLogos = function(svg, dimensions, currentColumnOrder) {
 			return text += d.name;
 		});
 }
+
+// var drag = d3.behavior.drag()
+// 	.on("drag", function(d,i) {
+// 		var mouse = d3.mouse(d3.select("svg").node());
+// 		d3.select(this).attr("x", mouse[0]);
+// 	});
 
 var drawBarCharts = function(svg, dimensions, currentColumnOrder) {
 	drawStackedBarCharts(svg, dimensions, currentColumnOrder);
@@ -990,8 +1013,23 @@ var updateStyleOrder = function(d, key) {
 		alignedCategoryOrder.splice(index, 1);
 		alignedCategoryOrder.unshift(d.category);
 	}
+	// else if (key == "university") {
+	// 	updateSortOrdersForUniversity(d);
+	// 	sortUniversity = d;
+	// 	console.log(sortUniversity.name);
+	// }
 	drawURIF(false);
 }
+
+// var updateSortOrdersForUniversity = function(u) {
+// 	styleOrder = styleOrder.sort(function(a, b) {
+// 		var compareA = u.restaurantStats[a];
+// 		var compareB = u.restaurantStats[b];
+// 		if (compareA === undefined) compareA = 0; else compareA = compareA.averageStars();
+// 		if (compareB === undefined) compareB = 0; else compareB = compareB.averageStars();
+// 		return compareB - compareA;
+// 	});
+// }
 
 function playSound() {
 	document.getElementById("soundfile").innerHTML="<embed src=\"./media/whoosh.wav\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
@@ -1033,6 +1071,7 @@ var resetURIF = function() {
 		residencies: ["out_of_state", "in_state", "international", "unknown_residence"],
 		ethnicities: ["white","hispanic","asian","nonresident_alien","other"]
 	};
+	// sortUniversity = "";
 	
 	drawURIF(false);
 };
