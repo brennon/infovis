@@ -16,7 +16,7 @@ Quick tip: You'll need a webserver running to serve these files.  If you don't, 
 - Scales (incl. mini scale)
 - Style images
 - Highlight the selected/sorted by restaurant style
-- <div>Align tooltip text left</div>
+- <del>Align tooltip text left</del>
 - Circle radius scale
 - Reorder by style label
 - Draggable regions
