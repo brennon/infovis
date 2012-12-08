@@ -34,7 +34,10 @@
 			}
 			.yui3-panel {
 			    outline: none;
-				opacity: 0.85;
+				opacity: 1;
+				background: white;
+				border: 1px solid black;
+				padding: 10px;
 			}
 
 			.yui3-panel #panelContent {
@@ -139,7 +142,7 @@
 			    }
 
 			    panel = new Y.Panel({
-			        srcNode: '#panelContent',
+			        srcNode: '#legendPanel',
 			        width  : 650,
 					height : 500,
 			        xy     : [window.innerWidth / 2 - 300, -300],
@@ -166,6 +169,57 @@
 			    });
 
 			});
+			
+			YUI().use('transition', 'panel', function (Y) {
+
+			    var openBtn = Y.one('#showInstructions'),
+			        panel, bb;
+
+			    function showPanel() {
+			        panel.show();
+			        bb.transition({
+			            duration: 0.5,
+			            top     : '80px'
+			        });
+			    }
+
+			    function hidePanel() {
+			        bb.transition({
+			            duration: 0.5,
+			            top     : '-300px'
+			        }, function () {
+			            panel.hide();
+			        });
+			    }
+
+			    panel = new Y.Panel({
+			        srcNode: '#instructionsPanel',
+			        width  : 650,
+					height : 200,
+			        xy     : [window.innerWidth / 2 - 300, -300],
+			        zIndex : 5,
+			        modal  : true,
+			        visible: false,
+			        render : true,
+			        buttons: [
+			            {
+			                value  : 'Close',
+			                section: 'footer',
+			                action : function (e) {
+			                    e.preventDefault();
+			                    hidePanel();
+			                }
+			            }
+			        ]
+			    });
+
+			    bb = panel.get('boundingBox');
+
+			    openBtn.on('click', function (e) {
+			        showPanel();
+			    });
+
+			});
 		</script>
 	</head>
 	<body>
@@ -174,15 +228,16 @@
 		<div id="legend">
 			Sorted by: <span id="sortDescription"></span> | 
 			<a href="#" id="showLegend">Legend</a> | 
+			<a href="#" id="showInstructions">Instructions</a> | 
 			<a href="javascript:resetURIF()">Reset</a>
-			<div id="panelContent" class="yui3-widget-loading">
-			    <div class="yui3-widget-hd">
-			        Legend
-			    </div>
+			<div id="legendPanel" class="yui3-widget-loading">
 			    <div class="yui3-widget-bd">
 			        <img id="legendImage" src="./images/legend.png" />
 			    </div>
-				<div class="yui3-widget-ft">
+			</div>
+			<div id="instructionsPanel" class="yui3-widget-loading">
+			    <div class="yui3-widget-bd">
+			        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 			    </div>
 			</div>
 		</div>
