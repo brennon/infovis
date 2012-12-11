@@ -97,6 +97,10 @@
 			rect.ethnicities-other.highlighted { fill: black; }
 			rect.muted { fill: grey; }
 			text.restaurantLabel { font-family: 'Mouse Memoirs', sans-serif; }
+			
+			#showLegend, #showInstructions {
+				font-weight: bolder;
+			}
 		</style>
 		<script src="http://yui.yahooapis.com/3.7.3/build/yui/yui-min.js"></script>
 		<script>
@@ -226,7 +230,7 @@
 		<div id="header">URIF</div>
 		<div id="visualization"></div>
 		<div id="legend">
-			Sorted by: <span id="sortDescription"></span> | 
+			Sorted by: <span id="sortDescription"></span><br /> 
 			<a href="#" id="showLegend">Legend</a> | 
 			<a href="#" id="showInstructions">Instructions</a> | 
 			<a href="javascript:resetURIF()">Reset</a>
