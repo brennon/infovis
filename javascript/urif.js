@@ -447,10 +447,10 @@ var drawLabels = function(svg, dimensions) {
 		.append("image")
 		.classed("restaurantLabel", true)
 		.attr("x", -60)
-		.attr("height", function(d) { return dimensions.rows.bubbles.height(); })
+		.attr("height", function(d) { return dimensions.rows.bubbles.height() + 60; })
 		.attr("width", function(d) { return dimensions.columns.width(); })
 		.attr("y", function(d, i) {
-			return (dimensions.rows.bubbles.height() * i);
+			return (dimensions.rows.bubbles.height() * i) - 30;
 		})
 		.attr("xlink:href", function(d) { return "./images/"+d.name+".png"; })
 		.attr("title", function(d) {
@@ -464,7 +464,7 @@ var drawLabels = function(svg, dimensions) {
 	restaurantLabels.transition()
 		.duration(2000)
 		.attr("y", function(d, i) {
-			return (dimensions.rows.bubbles.height() * i);
+			return (dimensions.rows.bubbles.height() * i) - 30;
 		});
 }
 
@@ -882,11 +882,11 @@ var drawGrid = function(svg, dimensions) {
 	
 		addTooltips();
 	}
-	/*
+	
 	var lineScale = d3.scale.linear()
 		.domain([starRange[0], starRange[1]])
 		.range([0, dimensions.columns.width() / 2]);
-	
+	/*
 	for (var i = starRange[0]; i <= starRange[1]; i++) {
 		grid.append("line")
 			.classed("scale", true)
@@ -911,7 +911,7 @@ var drawGrid = function(svg, dimensions) {
 			});
 	}
 	*/
-	/*
+	
 	grid.append("line")
 		.classed("scale", true)
 		.attr("x1", dimensions.bars.x() - 10)
@@ -973,7 +973,6 @@ var drawGrid = function(svg, dimensions) {
 				return (j * 25) + "K";
 			});
 	}
-	*/
 };
 
 var drawLegend = function() {
