@@ -503,12 +503,12 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 	
 	var circleSaturationScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([1.0, 1.0])
+		.range([1.0, 0.3])
 		.exponent(0.05);
 	
 	var circleLightnessScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([0.55, 0.85])
+		.range([0.55, 0.55])
 		.exponent(0.05);
 	
 	var allRestaurantStats = [];
