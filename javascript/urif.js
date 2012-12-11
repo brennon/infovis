@@ -881,7 +881,7 @@ var drawGrid = function(svg, dimensions) {
 	
 		addTooltips();
 	}
-	
+	/*
 	var lineScale = d3.scale.linear()
 		.domain([starRange[0], starRange[1]])
 		.range([0, dimensions.columns.width() / 2]);
@@ -909,7 +909,8 @@ var drawGrid = function(svg, dimensions) {
 				return label.toString()
 			});
 	}
-	
+	*/
+	/*
 	grid.append("line")
 		.classed("scale", true)
 		.attr("x1", dimensions.bars.x() - 10)
@@ -971,6 +972,7 @@ var drawGrid = function(svg, dimensions) {
 				return (j * 25) + "K";
 			});
 	}
+	*/
 };
 
 var drawLegend = function() {
