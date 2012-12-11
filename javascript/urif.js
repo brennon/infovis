@@ -503,12 +503,12 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 	
 	var circleSaturationScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([1.0, 0.3])
+		.range([1.0, 1.0])
 		.exponent(0.05);
 	
 	var circleLightnessScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([0.55, 0.55])
+		.range([0.9, 0.1])
 		.exponent(0.05);
 	
 	var allRestaurantStats = [];
@@ -580,15 +580,14 @@ var drawLines = function(svg, dimensions, currentColumnOrder) {
 		})
 		.attr("stroke", "rgb(0,0,0)")
 		.attr("stroke-width", 0.5)
+		.style("opacity", 0.5)
 		.attr("x1", dimensions.bubbles.x())
 		.attr("x2", dimensions.bubbles.x())
 		.attr("y1", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
 		.attr("y2", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
-		// .attr("opacity", 0.5)
 		.transition()
 		.delay(2000)
 		.duration(1000)
-		// .attr("stroke-dasharray", "2, 2")
 		.attr("y1", dimensions.bubbles.y())
 		.attr("y2", dimensions.bubbles.y() + dimensions.bubbles.height());
 }
