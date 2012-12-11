@@ -350,7 +350,8 @@ var buildEntireChart = function(div, isResizing) {
 			}
 		},
 		restaurantLabels: {
-			width: function() { return dimensions.svg.width() * 0.05; },
+			height: function() { return dimensions.rows.bubbles.height(); },
+			width: function() { return dimensions.svg.width() * 0.04; }
 		},
 		columns: {
 			width: function() {
@@ -445,9 +446,9 @@ var drawLabels = function(svg, dimensions) {
 	restaurantLabels.enter()
 		.append("image")
 		.classed("restaurantLabel", true)
-		.attr("x", -100)
-		.attr("height", function(d) { return dimensions.columns.width() - 5; })
-		.attr("width", function(d) { return dimensions.columns.width() - 5; })
+		.attr("x", -60)
+		.attr("height", function(d) { return dimensions.rows.bubbles.height(); })
+		.attr("width", function(d) { return dimensions.columns.width(); })
 		.attr("y", function(d, i) {
 			return (dimensions.rows.bubbles.height() * i);
 		})
