@@ -584,6 +584,7 @@ var drawLines = function(svg, dimensions, currentColumnOrder) {
 		.attr("x2", dimensions.bubbles.x())
 		.attr("y1", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
 		.attr("y2", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
+		// .attr("opacity", 0.5)
 		.transition()
 		.delay(2000)
 		.duration(1000)
