@@ -496,9 +496,19 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 		.domain([2, 5])
 		.range([0, (dimensions.rows.bubbles.height() / 2)]);
 	
-	var circleColorScale = d3.scale.pow()
+	var circleHueScale = d3.scale.pow()
 		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
-		.range([1,0.2])
+		.range([100, 0])
+		.exponent(0.05);
+	
+	var circleSaturationScale = d3.scale.pow()
+		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
+		.range([0.7, 1.0])
+		.exponent(0.05);
+	
+	var circleLightnessScale = d3.scale.pow()
+		.domain([restaurantInfo.mostReviews, restaurantInfo.leastReviews])
+		.range([0.8, 0.45])
 		.exponent(0.05);
 	
 	var allRestaurantStats = [];
@@ -529,7 +539,7 @@ var drawBubbles = function(svg, dimensions, currentColumnOrder) {
 			var index = currentColumnOrder.indexOf(d.university);
 			return dimensions.bubbles.x() + (index * dimensions.columns.width()) + (dimensions.columns.width() / 2);
 		})
-		.attr("fill", function(d) { return d3.hsl(30,circleColorScale(d.totalReviews),0.55); })
+		.attr("fill", function(d) { return d3.hsl(circleHueScale(d.totalReviews),1.0,0.62); })
 		.attr("cy", function(d) {
 			var index = styleOrder.indexOf(d.category);
 			return (index * dimensions.rows.bubbles.height()) + (dimensions.rows.bubbles.height() / 2);
