@@ -580,7 +580,7 @@ var drawLines = function(svg, dimensions, currentColumnOrder) {
 		})
 		.attr("stroke", "rgb(0,0,0)")
 		.attr("stroke-width", 0.5)
-		.style("opacity", 0.5)
+		// .style("opacity", 0.5)
 		.attr("x1", dimensions.bubbles.x())
 		.attr("x2", dimensions.bubbles.x())
 		.attr("y1", (dimensions.bubbles.y() + dimensions.bubbles.height()) / 2)
